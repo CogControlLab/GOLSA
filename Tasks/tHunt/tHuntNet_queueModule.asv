@@ -13,13 +13,13 @@ dt=.05;
 
 if NEW_NETWORK
     clearvars -except NEW_NETWORK SET_WEIGHTS dt endTime t
-    [e, n] = create_smallEnvNet_queue(SET_WEIGHTS);
+    [e, n] = create_tHuntNet_queue(SET_WEIGHTS);
 elseif ~exist('n')
     error('Network has not been initialized. Set NEW_NETWORK=1')
 end
 
 
-load('stateSpaces/smallEnv_weights.mat') %used to compare with model weights to assess learning
+load('stateSpaces/tHunt_weights.mat') %used to compare with model weights to assess learning
 
 
 
@@ -31,7 +31,7 @@ MAX_STUCK_TIME = Inf; %maximum time to have a goal and not move
 NUM_TRIALS = 4;
 TEXT_OUTPUT = 1;
 
-SETUP_LIST = [1, 6; 5, 2; 1, 6; 2, 5]; %column 1: starting states; column 2: goals
+SETUP_LIST = [1, 2 ,4]; %column 1: starting states; column 2: goals
 REPEAT_MODE = 1;  %1 = alternate, 2 = repeat, 3 = first only
 %%%%%%%%%%%%%%%%%
 
@@ -82,7 +82,7 @@ for trial_i = 1:NUM_TRIALS
     
 
     startingState = SETUP_LIST(setupIndices(trial_i), 1);
-    goal = SETUP_LIST(setupIndices(trial_i), 2);
+    goal = SETUP_LIST(setupIndices(trial_i), 2:3);
  
     lastState = startingState;
 
@@ -90,7 +90,7 @@ for trial_i = 1:NUM_TRIALS
     e.reset(startingState); 
     n.setNode('n_env', e.get_locVec.*4);
     
-    n.so('n_goal').set_vals(goal); n.so('n_goal').scaleVals(10);
+    n.so('n_goal').set_vals(goal(1)); n.so('n_goal').scaleVals(10);
     fprintf('Starting trial %i; FROM: %i TO: %i \n', trial_i, startingState, goal);
     
     for t = dt:dt:endTime 
@@ -122,10 +122,20 @@ for trial_i = 1:NUM_TRIALS
         n.update(); 
         
         %If at goal, allow a little time for learning
-        if ((e.curState == goal) && (tSinceMove > (MAX_STUCK_TIME - 1)))
+        if ((e.curState == goal(1)) && (tSinceMove > (MAX_STUCK_TIME - 1))) && length(goal)==1
+            
+          
             disp('At goal')
             endTime = t;
             break
+            
+        elseif ((e.curState == goal(1)) && (tSinceMove > (MAX_STUCK_TIME - 1))) && length(goal)~=1
+            
+                n.so('n_goal').set_vals(goal(1)); n.so('n_goal').scaleVals(10);
+
+            goal(1)=[];
+            disp('At goal')
+
         end
     end
     
