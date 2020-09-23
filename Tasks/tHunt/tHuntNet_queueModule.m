@@ -1,5 +1,5 @@
 % runs small 6-state environment simulation
-
+clear all
 %%%%%%%%%%%%%%%
 % Basic Setup %
 %%%%%%%%%%%%%%%
@@ -27,7 +27,7 @@ load('stateSpaces/tHunt_weights.mat') %used to compare with model weights to ass
 % Run Settings %
 %%%%%%%%%%%%%%%%
 MAX_TIME = 600; %maximum trial length
-MAX_STUCK_TIME = Inf; %maximum time to have a goal and not move
+MAX_STUCK_TIME = 40; %maximum time to have a goal and not move
 NUM_TRIALS = 1;
 TEXT_OUTPUT = 1;
 
@@ -92,7 +92,7 @@ for trial_i = 1:NUM_TRIALS
     n.reset();
     e.reset(startingState); 
     n.setNode('n_env', e.get_locVec.*4);
-    n.so('n_goal').vals(3:4)=[10 2]
+    n.so('n_goal').vals(3:4)=[10 6]
 %     n.so('n_goal').set_vals(goal(1:2)); n.so('n_goal').scaleVals(10);
     fprintf('Starting trial %i; FROM: %i TO: %i \n', trial_i, startingState, goal(1));
     
@@ -100,7 +100,7 @@ for trial_i = 1:NUM_TRIALS
         
         if atTime(4)
             n.setNode('n_qOn', 1);
-        elseif atTime(10)
+        elseif atTime(14)
             n.setNode('n_qOn', 2);
         end
 %         if ~isempty(goalTime)
@@ -133,7 +133,7 @@ for trial_i = 1:NUM_TRIALS
         n.update(); 
         
         %If at goal, allow a little time for learning
-        if e.curState == goal(1) 
+        if e.curState == goal(1) && tSinceMove>5
             disp('goal goal')
             if length(goal)==1
                 
@@ -143,12 +143,12 @@ for trial_i = 1:NUM_TRIALS
                 
             else
                 t
-                n.setNode('n_qOn', 0);
+                 n.setNode('n_qOn', 0);
                 n.so('n_goal').vals(goal(1))=0;
                 goal(1)=[];
                 n.so('n_goal').vals(goal(1))=1;
                 
-                n.so('n_goal').scaleVals(10);
+%                 n.so('n_goal').scaleVals(10);
                 
                 disp('At key goal')
 %                                 n.setNode('n_qOn', 1);

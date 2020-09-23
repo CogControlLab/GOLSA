@@ -1,5 +1,5 @@
 % runs small 6-state environment simulation
-
+clear all
 %%%%%%%%%%%%%%%
 % Basic Setup %
 %%%%%%%%%%%%%%%
