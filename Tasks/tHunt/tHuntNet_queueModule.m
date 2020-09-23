@@ -92,7 +92,7 @@ for trial_i = 1:NUM_TRIALS
     n.reset();
     e.reset(startingState); 
     n.setNode('n_env', e.get_locVec.*4);
-    n.so('n_goal').vals(3:4)=[10 6]
+%     n.so('n_goal').vals(3:4)=[10 6]
 %     n.so('n_goal').set_vals(goal(1:2)); n.so('n_goal').scaleVals(10);
     fprintf('Starting trial %i; FROM: %i TO: %i \n', trial_i, startingState, goal(1));
     
@@ -100,17 +100,16 @@ for trial_i = 1:NUM_TRIALS
         
         if atTime(4)
             n.setNode('n_qOn', 1);
+            n.so('n_goal').vals(3)=10;
         elseif atTime(14)
             n.setNode('n_qOn', 2);
+            n.so('n_goal').vals(4)=10;
+            n.so('n_goal').vals(3)=0;
+            
+            
         end
-%         if ~isempty(goalTime)
-%         if (t-goalTime)>4
-%                         n.setNode('n_qOn', 1);
-%         elseif (t-goalTime)>16
-%             n.setNode('n_qOn', 2);
-%         end
-%         end
 
+        
         
         [moved, action, descrip] = e.emwalk(n.so('n_body').vals, MAX_STUCK_TIME, tSinceMove, exploreRate);
         if moved==1
