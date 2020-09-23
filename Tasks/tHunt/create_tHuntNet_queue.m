@@ -128,29 +128,12 @@ function [e, n] = create_tHuntNet_queue(set_weights)
     %== Choosing the next state ==
     %=============================
 % 
-%     n.connect('state', 'adjacent', 'one-to-one', 0, 2, 'adjacency', 1, {{'n_qOn',[0 0]}});
-%     n.so('p_state_adjacent').learningParams = [.6, .7, .6];
-%     
-%     n.connect('state', 'gradient', 'one-to-one', 0, 4, 'null', 1, {{'n_subOsc', [.2, 1, 0]}});
-% 
-%     n.connect('goal', 'gradient', 'one-to-one', 0, 4, 'null', 0, {{'n_subOsc', [-.2, -1, 0]}}); 
-% 
-%     n.connect('gradient', 'gradient', 'one-to-one', 0, 1, 'gradient', 10); 
-%     n.so('p_gradient_gradient').learnGate={{n.so('n_subOsc'), [.2, 1]}};
-%     n.so('p_gradient_gradient').learningParams = [.75, .7, .75];
-% 
-%     n.connect('gradient', 'next', 'one-to-one', 0, 2, 'null', 0, {{'n_subOsc', [-1, -.2, 1]}}); 
-%     n.so('p_gradient_next').channels={n.so('adjacent'), .3};
-% 
-%     n.connect('next', 'next', 'impose', 0, 2, 'null', 0);
-
-    
-    n.connect('state', 'adjacent', 'one-to-one', 0, 2, 'adjacency', 1);
+    n.connect('state', 'adjacent', 'one-to-one', 0, 2, 'adjacency', 1, {{'n_qOn',[0 0]}});
     n.so('p_state_adjacent').learningParams = [.6, .7, .6];
     
     n.connect('state', 'gradient', 'one-to-one', 0, 4, 'null', 1, {{'n_subOsc', [.2, 1, 0]}});
 
-    n.connect('goal', 'gradient', 'one-to-one', 0, 4, 'null', 0, {{'n_subOsc', [-.2, -1, 0]}});  %weight factor was 2 on 5/3/18, changed to enhance gradient
+    n.connect('goal', 'gradient', 'one-to-one', 0, 4, 'null', 0, {{'n_subOsc', [-.2, -1, 0]}}); 
 
     n.connect('gradient', 'gradient', 'one-to-one', 0, 1, 'gradient', 10); 
     n.so('p_gradient_gradient').learnGate={{n.so('n_subOsc'), [.2, 1]}};
@@ -160,6 +143,23 @@ function [e, n] = create_tHuntNet_queue(set_weights)
     n.so('p_gradient_next').channels={n.so('adjacent'), .3};
 
     n.connect('next', 'next', 'impose', 0, 2, 'null', 0);
+
+%     
+%     n.connect('state', 'adjacent', 'one-to-one', 0, 2, 'adjacency', 1);
+%     n.so('p_state_adjacent').learningParams = [.6, .7, .6];
+%     
+%     n.connect('state', 'gradient', 'one-to-one', 0, 4, 'null', 1, {{'n_subOsc', [.2, 1, 0]}});
+% 
+%     n.connect('goal', 'gradient', 'one-to-one', 0, 4, 'null', 0, {{'n_subOsc', [-.2, -1, 0]}});  %weight factor was 2 on 5/3/18, changed to enhance gradient
+% 
+%     n.connect('gradient', 'gradient', 'one-to-one', 0, 1, 'gradient', 10); 
+%     n.so('p_gradient_gradient').learnGate={{n.so('n_subOsc'), [.2, 1]}};
+%     n.so('p_gradient_gradient').learningParams = [.75, .7, .75];
+% 
+%     n.connect('gradient', 'next', 'one-to-one', 0, 2, 'null', 0, {{'n_subOsc', [-1, -.2, 1]}}); 
+%     n.so('p_gradient_next').channels={n.so('adjacent'), .3};
+% 
+%     n.connect('next', 'next', 'impose', 0, 2, 'null', 0);
 
     %=========================
     %== Monitoring the past ==

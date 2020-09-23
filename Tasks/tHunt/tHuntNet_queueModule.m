@@ -81,6 +81,7 @@ for trial_i = 1:NUM_TRIALS
     tSinceMove = -1.5;
     moved = 0;
     exploreRate = 0;
+    goalTime=[];
     
 
     startingState = SETUP_LIST(setupIndices(trial_i), 1);
@@ -97,11 +98,19 @@ for trial_i = 1:NUM_TRIALS
     
     for t = dt:dt:endTime 
         
-%         if atTime(4)
-%             n.setNode('n_qOn', 1);
-%         elseif atTime(10)
+        if atTime(4)
+            n.setNode('n_qOn', 1);
+        elseif atTime(10)
+            n.setNode('n_qOn', 2);
+        end
+%         if ~isempty(goalTime)
+%         if (t-goalTime)>4
+%                         n.setNode('n_qOn', 1);
+%         elseif (t-goalTime)>16
 %             n.setNode('n_qOn', 2);
 %         end
+%         end
+
         
         [moved, action, descrip] = e.emwalk(n.so('n_body').vals, MAX_STUCK_TIME, tSinceMove, exploreRate);
         if moved==1
@@ -133,8 +142,8 @@ for trial_i = 1:NUM_TRIALS
                 break
                 
             else
-%             n.setNode('n_qOn', 1);
-   
+                t
+                n.setNode('n_qOn', 0);
                 n.so('n_goal').vals(goal(1))=0;
                 goal(1)=[];
                 n.so('n_goal').vals(goal(1))=1;
@@ -142,6 +151,12 @@ for trial_i = 1:NUM_TRIALS
                 n.so('n_goal').scaleVals(10);
                 
                 disp('At key goal')
+                
+                goalTime = t;
+
+                
+                
+                
             end
         end
     end
