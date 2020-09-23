@@ -28,7 +28,7 @@ load('stateSpaces/tHunt_weights.mat') %used to compare with model weights to ass
 %%%%%%%%%%%%%%%%
 MAX_TIME = 600; %maximum trial length
 MAX_STUCK_TIME = Inf; %maximum time to have a goal and not move
-NUM_TRIALS = 4;
+NUM_TRIALS = 1;
 TEXT_OUTPUT = 1;
 
 SETUP_LIST = [1, 3 ,4]; %column 1: starting states; column 2: goals
@@ -92,8 +92,8 @@ for trial_i = 1:NUM_TRIALS
     n.reset();
     e.reset(startingState); 
     n.setNode('n_env', e.get_locVec.*4);
-    
-    n.so('n_goal').set_vals(goal(1)); n.so('n_goal').scaleVals(10);
+    n.so('n_goal').vals(3:4)=[10 2]
+%     n.so('n_goal').set_vals(goal(1:2)); n.so('n_goal').scaleVals(10);
     fprintf('Starting trial %i; FROM: %i TO: %i \n', trial_i, startingState, goal(1));
     
     for t = dt:dt:endTime 
@@ -151,7 +151,8 @@ for trial_i = 1:NUM_TRIALS
                 n.so('n_goal').scaleVals(10);
                 
                 disp('At key goal')
-                
+%                                 n.setNode('n_qOn', 1);
+
                 goalTime = t;
 
                 
